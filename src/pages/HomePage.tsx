@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import FoodCard from "@/components/FoodCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -57,14 +57,18 @@ const HomePage = () => {
   
   const handleClaim = (id: string) => {
     // In a real app, this would make an API call to claim the food
-    toast({
-      title: "Food Claimed!",
-      description: "You have successfully claimed this food. Contact the provider for pickup details.",
-      duration: 5000,
-    });
+    const claimedItem = foodItems.find(item => item.id === id);
     
-    // Remove the claimed item from the list
-    setFoodItems(foodItems.filter(item => item.id !== id));
+    if (claimedItem) {
+      toast({
+        title: "Food Claimed!",
+        description: `You've successfully claimed ${claimedItem.title}. Head to ${claimedItem.location} within 3 hours!`,
+        duration: 5000,
+      });
+    }
+    
+    // We don't remove the item now, as we show "Claimed by you" instead
+    // The state change happens in the FoodCard component
   };
   
   const filteredItems = foodItems.filter(item => 
